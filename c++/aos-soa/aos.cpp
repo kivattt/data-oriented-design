@@ -54,31 +54,16 @@ int main() {
 
 	auto start = std::chrono::high_resolution_clock::now();
 	unsigned long long sum = 0;
-	for (int i = 0; i < 100; i++) {
-		for (Thing &thing : things) {
-			sum += thing.position.x;
-			sum += thing.position.y;
-			sum += thing.position.z;
-		}
-	}
-
-	unsigned long long sum2 = 0;
 	for (Thing &thing : things) {
-		//sum2 += thing.position.x;
-		sum2 += thing.id;
-		sum2 += thing.flags;
-		sum2 += thing.name.size();
-		/*for (int i = 0; i < 800; i++) {
-			sum2 += thing.stuff[i];
-		}*/
-		sum2 += thing.a;
-		sum2 += thing.b;
+		sum += thing.position.x;
+		sum += thing.position.y;
+		sum += thing.position.z;
 	}
 
 	auto end = std::chrono::high_resolution_clock::now();
 	auto durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
 	std::cout << "sum : " << sum << std::endl;
-	std::cout << "sum2: " << sum2 << std::endl;
+	//std::cout << "sum2: " << sum2 << std::endl;
 	std::cout << "Took " << durationMs.count() << "ms" << std::endl;
 }
