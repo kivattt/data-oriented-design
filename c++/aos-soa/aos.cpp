@@ -1,36 +1,47 @@
 #include <iostream>
-#include <string>
-#include <chrono>
 #include <vector>
+#include <chrono>
+#include <string>
 
 using std::string;
 using std::vector;
 
+struct Vec3 {
+	float x;
+	float y;
+	float z;
+};
+
 struct Thing {
-	string a;
-	string b;
-	string c;
-	vector <int> d;
-	vector <int> e;
-	int f;
+	int stuff[800];
+	Vec3 position;
+	string name;
+	int id;
+	unsigned flags;
+	float a;
+	float b;
 };
 
 vector <Thing> getThings() {
-	vector <int> vecInt(800);
-	for (int i = 0; i < 800; i++) {
-		vecInt[i] = 69;
-	}
-
 	Thing thing;
-	thing.a = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaalkjdslfkjjlksdfklj";
-	thing.b = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaalkjdslfkjjlksdfklj";
-	thing.c = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaalkjdslfkjjlksdfklj";
-	thing.d = vecInt;
-	thing.e = vecInt;
-	thing.f = 69;
+	thing.position.x = 69;
+	thing.position.y = 69;
+	thing.position.z = 69;
+	thing.id = 69;
+	thing.flags = 0;
+	thing.name = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+	int bigThing[800];
+	for (int i = 0; i < 800; i++) {
+		bigThing[i] = 69;
+	}
+	//thing.stuff = bigThing;
+	std::copy(std::begin(bigThing), std::end(bigThing), std::begin(thing.stuff));
+	thing.a = 69.0f;
+	thing.b = 69.0f;
 
-	const int nThings = 300000;
-	vector <Thing> things(nThings);
+	//const int nThings = 1600000; // Uses ~5 GB memory
+	const int nThings = 1000000;
+	vector<Thing> things(nThings);
 	for (int i = 0; i < nThings; i++) {
 		things[i] = thing;
 	}
@@ -39,32 +50,35 @@ vector <Thing> getThings() {
 }
 
 int main() {
-	vector <Thing> things = getThings();
+	vector<Thing> things = getThings();
 
 	auto start = std::chrono::high_resolution_clock::now();
 	unsigned long long sum = 0;
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 100; i++) {
+		for (Thing &thing : things) {
+			sum += thing.position.x;
+			sum += thing.position.y;
+			sum += thing.position.z;
+		}
+	}
+
+	unsigned long long sum2 = 0;
 	for (Thing &thing : things) {
-		/*thing.a.push_back('a');
-		thing.b.push_back('a');
-		thing.c.push_back('a');
-
-		thing.d.push_back(69);
-		thing.e.push_back(69);
-
-		++thing.f;*/
-
-		for (auto &e : thing.a) sum += e;
-		for (auto &e : thing.b) sum += e;
-		for (auto &e : thing.c) sum += e;
-		for (auto &e : thing.d) sum += e;
-		for (auto &e : thing.e) sum += e;
-		sum += thing.f;
+		//sum2 += thing.position.x;
+		sum2 += thing.id;
+		sum2 += thing.flags;
+		sum2 += thing.name.size();
+		/*for (int i = 0; i < 800; i++) {
+			sum2 += thing.stuff[i];
+		}*/
+		sum2 += thing.a;
+		sum2 += thing.b;
 	}
-	}
+
 	auto end = std::chrono::high_resolution_clock::now();
 	auto durationMs = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
-	std::cout << sum << std::endl;
+	std::cout << "sum : " << sum << std::endl;
+	std::cout << "sum2: " << sum2 << std::endl;
 	std::cout << "Took " << durationMs.count() << "ms" << std::endl;
 }
